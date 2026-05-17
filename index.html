@@ -212,6 +212,15 @@ body {
     z-index: 1;
 }
 
+/* 役職あり（特別配置）時の左帯幾何学模様 */
+.is-executive .card-left-pane::before {
+    background-image: 
+        linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05)),
+        linear-gradient(-45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05)),
+        radial-gradient(circle at 50% 0%, rgba(0,0,0,0.1) 0%, transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(0,0,0,0.1) 0%, transparent 40%);
+}
+
 /* アイコン：より大きく、象徴的に */
 .card-icon-container {
     width: 13mm; /* 大きく変更 */
@@ -233,6 +242,11 @@ body {
     z-index: 2;
     object-fit: contain;
     filter: brightness(0) invert(1) opacity(0.85);
+}
+
+/* 役職あり時のロゴ（白背景用） */
+.is-executive .card-logo-img {
+    filter: brightness(0) opacity(0.85);
 }
 
 /* 右側：白背景・テキスト領域 */
@@ -257,6 +271,11 @@ body {
     z-index: 0;
 }
 
+/* 役職あり時の右側ドット（白ドット） */
+.is-executive .card-right-pane::before {
+    background-image: radial-gradient(rgba(255,255,255,0.4) 0.5px, transparent 0.5px);
+}
+
 /* 新規追加：右下のアクセント幾何学模様（同心円） */
 .card-right-pane::after {
     content: '';
@@ -275,6 +294,17 @@ body {
     );
     z-index: 0;
     pointer-events: none;
+}
+
+/* 役職あり時の右下同心円（白系） */
+.is-executive .card-right-pane::after {
+    background: repeating-radial-gradient(
+        circle at 50% 50%,
+        transparent,
+        transparent 1.5mm,
+        rgba(255, 255, 255, 0.08) 1.5mm,
+        rgba(255, 255, 255, 0.08) 2mm
+    );
 }
 
 .card-right-content {
@@ -302,6 +332,17 @@ body {
     );
     z-index: 0;
     pointer-events: none;
+}
+
+/* 役職あり時の右上斜線（白系） */
+.is-executive .card-right-content::before {
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 1mm,
+        rgba(255,255,255,0.05) 1mm,
+        rgba(255,255,255,0.05) 2mm
+    );
 }
 
 /* タイポグラフィと配置の余白調整 */
@@ -377,6 +418,18 @@ body {
     color: #374151;
     letter-spacing: 0.2mm;
 }
+
+/* 役職あり時のテキストカラー反転（白文字化） */
+.is-executive .card-school-name {
+    color: rgba(255,255,255,0.85);
+    border-bottom: 0.2mm solid rgba(255,255,255,0.3);
+}
+.is-executive .card-role { color: rgba(255,255,255,0.9); }
+.is-executive .card-name { color: #ffffff; }
+.is-executive .card-romaji { color: rgba(255,255,255,0.7); }
+.is-executive .detail-label { color: rgba(255,255,255,0.6); }
+.is-executive .detail-value { color: #ffffff; }
+
 </style>
 </head>
 <body>
@@ -495,15 +548,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 </span>
             </div>
             
-            <label class="control-label">学年カラー（ディープトーン）</label>
-            <select data-index="${index}" data-field="gradeColor" class="form-select">
-                <option value="#C26038">テラコッタ (高3生)</option>
-                <option value="#C4A647">マスタード (高2生)</option>
-                <option value="#8B2E37">ボルドー (高1生)</option>
-                <option value="#1F2C4C" selected>ネイビー (中3生)</option>
-                <option value="#3B5B44">フォレスト (中2生)</option>
-                <option value="#52748C">スレート (中1生)</option>
-            </select>
+            <div class="grid-2">
+                <div>
+                    <label class="control-label">学年カラー</label>
+                    <select data-index="${index}" data-field="gradeColor" class="form-select">
+                        <option value="#C26038">テラコッタ (高3生)</option>
+                        <option value="#C4A647">マスタード (高2生)</option>
+                        <option value="#8B2E37">ボルドー (高1生)</option>
+                        <option value="#1F2C4C" selected>ネイビー (中3生)</option>
+                        <option value="#3B5B44">フォレスト (中2生)</option>
+                        <option value="#52748C">スレート (中1生)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="control-label">役職の有無（デザイン反転）</label>
+                    <select data-index="${index}" data-field="isExecutive" class="form-select">
+                        <option value="false" selected>平部員（通常配置）</option>
+                        <option value="true">役職あり（特別配置）</option>
+                    </select>
+                </div>
+            </div>
 
             <label class="control-label">担当分野</label>
             <select data-index="${index}" data-field="icon" class="form-select">
@@ -585,6 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= typeCount; i++) {
             formData[i] = {
                 gradeColor: document.querySelector(`select[data-index="${i}"][data-field="gradeColor"]`).value,
+                isExecutive: document.querySelector(`select[data-index="${i}"][data-field="isExecutive"]`).value === 'true',
                 icon: document.querySelector(`select[data-index="${i}"][data-field="icon"]`).value,
                 role: document.querySelector(`input[data-index="${i}"][data-field="role"]`).value,
                 name: document.querySelector(`input[data-index="${i}"][data-field="name"]`).value,
@@ -604,12 +669,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = formData[personIndex];
             if (data) {
-                // 左側帯の背景色
-                card.querySelector('.display-bg').style.backgroundColor = data.gradeColor;
-                
                 // アイコンクラスの更新
                 const iconEl = card.querySelector('.display-icon');
                 iconEl.className = `fa-solid ${data.icon} display-icon`;
+
+                // 役職の有無によるデザイン切り替え（反転）
+                if (data.isExecutive) {
+                    card.classList.add('is-executive');
+                    card.querySelector('.card-left-pane').style.backgroundColor = '#ffffff';
+                    card.querySelector('.card-right-pane').style.backgroundColor = data.gradeColor;
+                    iconEl.style.color = data.gradeColor;
+                    card.querySelector('.card-icon-container').style.borderColor = data.gradeColor;
+                } else {
+                    card.classList.remove('is-executive');
+                    card.querySelector('.card-left-pane').style.backgroundColor = data.gradeColor;
+                    card.querySelector('.card-right-pane').style.backgroundColor = '#ffffff';
+                    iconEl.style.color = '#ffffff';
+                    card.querySelector('.card-icon-container').style.borderColor = 'rgba(255,255,255,0.7)';
+                }
 
                 // テキストの反映
                 card.querySelector('.display-role').textContent = data.role || '　';
