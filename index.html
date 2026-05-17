@@ -1,1 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>横浜創英中高 放送部 | 名刺ジェネレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- シックな明朝体と、ラベル用のモダンなゴシック体を読み込み -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+/* ＝モダンなダッシュボードUIのスタイル（ジェネレーター全体）＝ */
+:root {
+    --bg-main: #f5f5f7;
+    --sidebar-bg: #ffffff;
+    --text-dark: #1d1d1f;
+    --text-muted: #86868b;
+    --border: #e5e7eb;
+    --accent: #1f2937;
+}
 
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    background-color: var(--sidebar-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    z-index: 10;
+}
+
+.header h1 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: 1px;
+    color: var(--accent);
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 360px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.preview-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #e5e5e5;
+}
+
+/* フォームコントロール */
+.control-panel { margin-bottom: 30px; }
+.control-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; }
+.form-select, .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    box-sizing: border-box;
+    background-color: #f9fafb;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+}
+.form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background-color: #ffffff;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+.btn-primary { background-color: var(--accent); color: #fff; }
+.btn-primary:hover { background-color: #000; }
+.btn-outline { background-color: #fff; border: 1px solid var(--border); color: var(--accent); }
+.btn-outline:hover { background-color: #f3f4f6; }
+
+.person-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.person-header {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    color: var(--accent);
+}
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 12px;
+}
+
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-size: 13px;
+}
+
+/* ＝名刺プレビュー領域のスタイル（A4 10面付け）＝ */
+.a4-paper {
+    width: 210mm;
+    height: 297mm;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    margin: 0 auto;
+    padding: 26mm 20mm;
+    display: grid;
+    grid-template-columns: repeat(2, 85mm);
+    grid-template-rows: repeat(5, 49mm);
+    gap: 0;
+    box-sizing: border-box;
+    transform-origin: top center;
+}
+
+/* ＝洗練された名刺デザイン（3号サイズ: 85mm × 49mm）＝ */
+.business-card {
+    width: 85mm;
+    height: 49mm;
+    box-sizing: border-box;
+    border: 0.2mm dashed #e5e7eb; /* カットガイド */
+    background-color: #ffffff;
+    overflow: hidden;
+    font-family: 'Noto Serif JP', serif;
+    color: #333;
+    position: relative;
+    display: flex;
+}
+
+/* 左側：色帯（少し幅を広げて安定感を） */
+.card-left-pane {
+    width: 25mm; /* 22mmから拡大 */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6mm 0;
+    box-sizing: border-box;
+    position: relative;
+    background-color: #1F2C4C; 
+}
+
+/* アールデコ風 幾何学模様（左帯） */
+.card-left-pane::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)),
+        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,0.15) 0%, transparent 40%);
+    background-size: 6mm 6mm, 6mm 6mm, 100% 100%, 100% 100%;
+    background-position: 0 0, 3mm 3mm, 0 0, 0 0;
+    z-index: 1;
+}
+
+/* アイコン：より大きく、象徴的に */
+.card-icon-container {
+    width: 13mm; /* 大きく変更 */
+    height: 13mm;
+    border: 0.5px solid rgba(255,255,255,0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5.5mm; /* アイコン自体も大きく */
+    color: #ffffff;
+    z-index: 2;
+    background-color: rgba(0,0,0,0.1);
+}
+
+/* ロゴ：少し大きくして存在感を出す */
+.card-logo-img {
+    width: 16mm;
+    z-index: 2;
+    object-fit: contain;
+    filter: brightness(0) invert(1) opacity(0.85);
+}
+
+/* 右側：白背景・テキスト領域 */
+.card-right-pane {
+    flex: 1;
+    position: relative;
+    padding: 4.5mm 5mm; /* 上下左右のパディングを少し減らして内部空間を確保 */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* アクセント図形のはみ出しをカット */
+}
+
+/* 右側背景：極薄いドット */
+.card-right-pane::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px);
+    background-size: 4mm 4mm;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+/* 新規追加：右下のアクセント幾何学模様（同心円） */
+.card-right-pane::after {
+    content: '';
+    position: absolute;
+    bottom: -10mm;
+    right: -10mm;
+    width: 45mm;
+    height: 45mm;
+    border-radius: 50%;
+    background: repeating-radial-gradient(
+        circle at 50% 50%,
+        transparent,
+        transparent 1.5mm,
+        rgba(0, 0, 0, 0.03) 1.5mm,
+        rgba(0, 0, 0, 0.03) 2mm
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+.card-right-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 新規追加：右上の細い斜線アクセント */
+.card-right-content::before {
+    content: '';
+    position: absolute;
+    top: -5mm;
+    right: 0mm;
+    width: 20mm;
+    height: 40mm;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 1mm,
+        rgba(0,0,0,0.015) 1mm,
+        rgba(0,0,0,0.015) 2mm
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* タイポグラフィと配置の余白調整 */
+.card-school-name {
+    text-align: left;
+    font-size: 2.2mm; /* 少し縮小して上品に */
+    letter-spacing: 0.3mm;
+    color: #6b7280;
+    border-bottom: 0.2mm solid #e5e7eb;
+    padding-bottom: 1.2mm;
+    margin-bottom: 3.5mm; /* 3mmから3.5mmへ広げ、名前エリアとの間隔を確保 */
+    position: relative;
+    z-index: 2;
+}
+
+.card-name-area {
+    margin-top: 0; /* 上部の余白は学校名側に任せる */
+    margin-bottom: auto; /* 詳細情報との間に自然な余白を生む */
+    position: relative;
+    z-index: 2;
+}
+
+.card-role {
+    font-size: 2.2mm; /* 少し縮小 */
+    color: #4b5563;
+    margin-bottom: 0.8mm; /* 名前との間隔を少し広げて窮屈さを緩和 */
+    letter-spacing: 0.5mm;
+}
+
+.card-name {
+    font-size: 6.2mm; /* 5.6mmから少し大きくして存在感をアップ */
+    font-weight: 500; 
+    letter-spacing: 1.5mm; /* 文字間隔を少し詰める */
+    color: #111827;
+    line-height: 1.1; 
+}
+
+/* 新規追加：ローマ字 */
+.card-romaji {
+    font-size: 1.6mm; /* 少し縮小 */
+    color: #9ca3af;
+    letter-spacing: 0.8mm;
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-top: 0.8mm; /* 名前との間隔を少し広げて窮屈さを緩和 */
+}
+
+/* 詳細情報：レイアウトを少し広めに */
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2mm; /* 文字サイズを下げた分、行間を適度に取って窮屈さを解消 */
+    position: relative;
+    z-index: 2;
+}
+
+.detail-row {
+    display: flex;
+    align-items: baseline;
+}
+
+/* ラベル：英字ゴシック */
+.detail-label {
+    width: 14mm; /* 少し狭く */
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1.5mm; /* 少し縮小 */
+    font-weight: 500;
+    color: #9ca3af;
+    letter-spacing: 0.5mm;
+}
+
+.detail-value {
+    font-size: 2.1mm; /* 3号名刺に合わせて適正なサイズに縮小 */
+    color: #374151;
+    letter-spacing: 0.2mm;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+    <h1>横浜創英中学・高等学校 放送部 | 名刺ジェネレーター</h1>
+</header>
+
+<div class="main-container">
+    <aside class="sidebar">
+        <div class="control-panel">
+            <label class="control-label">A4用紙の割り付け（レイアウト設定）</label>
+            <select id="layout-type" class="form-select">
+                <option value="1">1種類 (1人の名刺を10枚)</option>
+                <option value="2">2種類 (2人の名刺を5枚ずつ)</option>
+                <option value="5">5種類 (5人の名刺を2枚ずつ)</option>
+            </select>
+        </div>
+
+        <div id="forms-container">
+            <!-- JSで動的にフォームが生成されます -->
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button onclick="printCards()" class="btn btn-primary">
+                <i class="fa-solid fa-print"></i> 印刷する
+            </button>
+            <button onclick="generatePDF()" id="pdf-btn" class="btn btn-outline">
+                <i class="fa-solid fa-file-pdf"></i> PDFをダウンロード
+            </button>
+            <p style="font-size: 11px; color: #6b7280; text-align: center; margin-top: 8px;">
+                ※A4用紙・縮尺100%で印刷してください。<br>名刺3号（85mm×49mm）サイズで出力されます。
+            </p>
+        </div>
+    </aside>
+
+    <main class="preview-area">
+        <div class="zoom-control">
+            <i class="fa-solid fa-magnifying-glass-minus"></i>
+            <input type="range" id="zoom-slider" min="0.5" max="1.5" step="0.1" value="0.9" style="width: 150px;">
+            <i class="fa-solid fa-magnifying-glass-plus"></i>
+        </div>
+        
+        <div id="preview-container">
+            <div id="a4-preview" class="a4-paper" style="transform: scale(0.9);">
+                <!-- 名刺が動的に挿入されます -->
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 名刺のテンプレート -->
+<template id="card-template">
+    <div class="business-card">
+        <!-- 左側ペイン (色帯・アイコン・ロゴ) -->
+        <div class="card-left-pane display-bg">
+            <div class="card-icon-container">
+                <i class="fa-solid display-icon"></i>
+            </div>
+            <img src="https://ataro-qqq.github.io/housoucarder26/logo01.png" alt="Logo" class="card-logo-img" onerror="this.style.display='none'">
+        </div>
+        
+        <!-- 右側ペイン (白背景・テキスト・アクセント図形) -->
+        <div class="card-right-pane">
+            <div class="card-right-content">
+                <div class="card-school-name">横浜創英中学・高等学校 放送部</div>
+                
+                <div class="card-name-area">
+                    <div class="card-role display-role">人事</div>
+                    <div class="card-name display-name">中尾 汐里</div>
+                    <div class="card-romaji display-romaji">Shiori Nakao</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="detail-row">
+                        <div class="detail-label">CLASS</div>
+                        <div class="detail-value display-class">2年B組 21番</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">BIRTH</div>
+                        <div class="detail-value display-birth">2011.10.15</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">SPOT</div>
+                        <div class="detail-value display-spot">センター</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">MESSAGE</div>
+                        <div class="detail-value display-message">よろしくお願いします</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const layoutSelect = document.getElementById('layout-type');
+    const formsContainer = document.getElementById('forms-container');
+    const a4Preview = document.getElementById('a4-preview');
+    const cardTemplate = document.getElementById('card-template');
+    const zoomSlider = document.getElementById('zoom-slider');
+
+    zoomSlider.addEventListener('input', (e) => {
+        a4Preview.style.transform = `scale(${e.target.value})`;
+    });
+
+    function createFormHTML(index, total) {
+        return `
+        <div class="person-card" id="form-group-${index}">
+            <div class="person-header">
+                <span><i class="fa-regular fa-id-badge"></i> Person ${index}</span>
+                <span style="font-size: 11px; font-weight: normal; color: #6b7280;">
+                    ${total === 1 ? '全10枚' : (total === 2 ? '5枚' : '2枚')}
+                </span>
+            </div>
+            
+            <label class="control-label">学年カラー（ディープトーン）</label>
+            <select data-index="${index}" data-field="gradeColor" class="form-select">
+                <option value="#C26038">テラコッタ (高3生)</option>
+                <option value="#C4A647">マスタード (高2生)</option>
+                <option value="#8B2E37">ボルドー (高1生)</option>
+                <option value="#1F2C4C" selected>ネイビー (中3生)</option>
+                <option value="#3B5B44">フォレスト (中2生)</option>
+                <option value="#52748C">スレート (中1生)</option>
+            </select>
+
+            <label class="control-label">担当分野</label>
+            <select data-index="${index}" data-field="icon" class="form-select">
+                <option value="fa-microphone" selected>アナウンス</option>
+                <option value="fa-video">撮影</option>
+                <option value="fa-book">脚本/朗読</option>
+                <option value="fa-lightbulb">照明</option>
+                <option value="fa-tape">音響</option>
+                <option value="fa-laptop">編集</option>
+            </select>
+
+            <div class="grid-2">
+                <div>
+                    <label class="control-label">氏名</label>
+                    <input type="text" data-index="${index}" data-field="name" value="中尾 汐里" class="form-input">
+                </div>
+                <div>
+                    <label class="control-label">ローマ字</label>
+                    <input type="text" data-index="${index}" data-field="romaji" value="Shiori Nakao" class="form-input">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <label class="control-label">役職</label>
+                    <input type="text" data-index="${index}" data-field="role" value="人事" class="form-input">
+                </div>
+                <div>
+                    <label class="control-label">クラス・番号</label>
+                    <input type="text" data-index="${index}" data-field="classNum" value="2年B組 21番" class="form-input">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <label class="control-label">生年月日</label>
+                    <input type="text" data-index="${index}" data-field="birth" value="2011.10.15" class="form-input">
+                </div>
+                <div>
+                    <label class="control-label">スポット</label>
+                    <input type="text" data-index="${index}" data-field="spot" value="センター" class="form-input">
+                </div>
+            </div>
+
+            <div>
+                <label class="control-label">ひとこと</label>
+                <input type="text" data-index="${index}" data-field="message" value="よろしくお願いします" class="form-input">
+            </div>
+        </div>
+        `;
+    }
+
+    function updateLayout() {
+        const typeCount = parseInt(layoutSelect.value);
+        formsContainer.innerHTML = '';
+        for (let i = 1; i <= typeCount; i++) {
+            formsContainer.insertAdjacentHTML('beforeend', createFormHTML(i, typeCount));
+        }
+
+        a4Preview.innerHTML = '';
+        // 10面付け (2列5行)
+        for (let i = 0; i < 10; i++) {
+            const clone = cardTemplate.content.cloneNode(true);
+            a4Preview.appendChild(clone);
+        }
+
+        document.querySelectorAll('#forms-container input, #forms-container select').forEach(element => {
+            element.addEventListener('input', renderPreview);
+            element.addEventListener('change', renderPreview);
+        });
+        renderPreview();
+    }
+
+    function renderPreview() {
+        const typeCount = parseInt(layoutSelect.value);
+        const cards = a4Preview.querySelectorAll('.business-card');
+        const formData = {};
+
+        for (let i = 1; i <= typeCount; i++) {
+            formData[i] = {
+                gradeColor: document.querySelector(`select[data-index="${i}"][data-field="gradeColor"]`).value,
+                icon: document.querySelector(`select[data-index="${i}"][data-field="icon"]`).value,
+                role: document.querySelector(`input[data-index="${i}"][data-field="role"]`).value,
+                name: document.querySelector(`input[data-index="${i}"][data-field="name"]`).value,
+                romaji: document.querySelector(`input[data-index="${i}"][data-field="romaji"]`).value,
+                classNum: document.querySelector(`input[data-index="${i}"][data-field="classNum"]`).value,
+                birth: document.querySelector(`input[data-index="${i}"][data-field="birth"]`).value,
+                spot: document.querySelector(`input[data-index="${i}"][data-field="spot"]`).value,
+                message: document.querySelector(`input[data-index="${i}"][data-field="message"]`).value,
+            };
+        }
+
+        cards.forEach((card, index) => {
+            let personIndex = 1;
+            if (typeCount === 1) personIndex = 1;
+            else if (typeCount === 2) personIndex = (index % 2 === 0) ? 1 : 2;
+            else if (typeCount === 5) personIndex = Math.floor(index / 2) + 1;
+
+            const data = formData[personIndex];
+            if (data) {
+                // 左側帯の背景色
+                card.querySelector('.display-bg').style.backgroundColor = data.gradeColor;
+                
+                // アイコンクラスの更新
+                const iconEl = card.querySelector('.display-icon');
+                iconEl.className = `fa-solid ${data.icon} display-icon`;
+
+                // テキストの反映
+                card.querySelector('.display-role').textContent = data.role || '　';
+                card.querySelector('.display-name').textContent = data.name || '　';
+                card.querySelector('.display-romaji').textContent = data.romaji || '　';
+                card.querySelector('.display-class').textContent = data.classNum || '　';
+                card.querySelector('.display-birth').textContent = data.birth || '　';
+                card.querySelector('.display-spot').textContent = data.spot || '　';
+                card.querySelector('.display-message').textContent = data.message || '　';
+            }
+        });
+    }
+
+    layoutSelect.addEventListener('change', updateLayout);
+
+    // 印刷機能
+    window.printCards = function() {
+        const styleElements = document.querySelectorAll('style, link[rel="stylesheet"]');
+        let stylesHTML = '';
+        styleElements.forEach(el => { stylesHTML += el.outerHTML; });
+        const previewElement = document.getElementById('a4-preview');
+        
+        let iframe = document.getElementById('print-iframe');
+        if (iframe) document.body.removeChild(iframe);
+        
+        iframe = document.createElement('iframe');
+        iframe.id = 'print-iframe';
+        iframe.style.position = 'absolute';
+        iframe.style.top = '-10000px';
+        iframe.style.left = '-10000px';
+        iframe.style.width = '210mm';
+        iframe.style.height = '297mm';
+        iframe.style.border = 'none';
+        iframe.style.zIndex = '-9999';
+        document.body.appendChild(iframe);
+        
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <!DOCTYPE html>
+            <html lang="ja">
+            <head>
+                <meta charset="UTF-8">
+                <title>印刷用</title>
+                ${stylesHTML}
+                <style>
+                    body, html { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm; height: 297mm; }
+                    .a4-paper { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; }
+                    @page { size: A4 portrait; margin: 0; }
+                    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                </style>
+            </head>
+            <body>
+                ${previewElement.outerHTML}
+                <script>
+                    setTimeout(() => { window.focus(); window.print(); }, 500);
+                <\/script>
+            </body>
+            </html>
+        `);
+        doc.close();
+    };
+
+    // PDF出力機能
+    window.generatePDF = function() {
+        const sourceElement = document.getElementById('a4-preview');
+        const btn = document.getElementById('pdf-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 生成中...';
+        btn.disabled = true;
+
+        const clone = sourceElement.cloneNode(true);
+        clone.id = 'pdf-render-clone';
+        Object.assign(clone.style, {
+            position: 'absolute', top: '0', left: '0', zIndex: '-9999',
+            transform: 'scale(1)', boxShadow: 'none', margin: '0',
+            background: '#ffffff', width: '210mm', height: '297mm', overflow: 'visible'
+        });
+        document.body.appendChild(clone);
+
+        const opt = {
+            margin:       0,
+            filename:     'Housoubu_BusinessCards_3go.pdf',
+            image:        { type: 'jpeg', quality: 1.0 }, 
+            html2canvas:  { scale: 4, useCORS: true, logging: false, width: clone.offsetWidth, height: clone.offsetHeight },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        setTimeout(() => {
+            html2pdf().set(opt).from(clone).save().then(() => {
+                document.body.removeChild(clone);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error('PDF generation error:', err);
+                document.body.removeChild(clone);
+                btn.innerHTML = 'エラー';
+                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+            });
+        }, 300);
+    };
+
+    updateLayout();
+});
+</script>
+</body>
+</html>
