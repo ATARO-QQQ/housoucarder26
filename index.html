@@ -174,7 +174,7 @@ body {
     width: 85mm;
     height: 49mm;
     box-sizing: border-box;
-    border: 0.2mm dashed #e5e7eb; /* カットガイド */
+    border: 0.3mm dashed #9ca3af; /* 切り取り線として目立たせるための破線 */
     background-color: #ffffff;
     overflow: hidden;
     font-family: 'Noto Serif JP', serif;
@@ -183,9 +183,9 @@ body {
     display: flex;
 }
 
-/* 左側：色帯（少し幅を広げて安定感を） */
+/* 左側：色帯 */
 .card-left-pane {
-    width: 25mm; /* 22mmから拡大 */
+    width: 25mm; 
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -221,22 +221,22 @@ body {
         radial-gradient(circle at 50% 100%, rgba(0,0,0,0.1) 0%, transparent 40%);
 }
 
-/* アイコン：より大きく、象徴的に */
+/* アイコン：大きく、象徴的に */
 .card-icon-container {
-    width: 13mm; /* 大きく変更 */
+    width: 13mm; 
     height: 13mm;
     border: 0.5px solid rgba(255,255,255,0.7);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5.5mm; /* アイコン自体も大きく */
+    font-size: 5.5mm; 
     color: #ffffff;
     z-index: 2;
     background-color: rgba(0,0,0,0.1);
 }
 
-/* ロゴ：少し大きくして存在感を出す */
+/* ロゴ */
 .card-logo-img {
     width: 16mm;
     z-index: 2;
@@ -253,11 +253,11 @@ body {
 .card-right-pane {
     flex: 1;
     position: relative;
-    padding: 4.5mm 5mm; /* 上下左右のパディングを少し減らして内部空間を確保 */
+    padding: 5.5mm 6mm; /* ひとことがなくなったため余白を少し広げ、より伸びやかに調整 */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* アクセント図形のはみ出しをカット */
+    overflow: hidden; 
 }
 
 /* 右側背景：極薄いドット */
@@ -276,7 +276,7 @@ body {
     background-image: radial-gradient(rgba(255,255,255,0.4) 0.5px, transparent 0.5px);
 }
 
-/* 新規追加：右下のアクセント幾何学模様（同心円） */
+/* 右下のアクセント幾何学模様（同心円） */
 .card-right-pane::after {
     content: '';
     position: absolute;
@@ -315,7 +315,7 @@ body {
     flex-direction: column;
 }
 
-/* 新規追加：右上の細い斜線アクセント */
+/* 右上の細い斜線アクセント */
 .card-right-content::before {
     content: '';
     position: absolute;
@@ -348,52 +348,52 @@ body {
 /* タイポグラフィと配置の余白調整 */
 .card-school-name {
     text-align: left;
-    font-size: 2.2mm; /* 少し縮小して上品に */
+    font-size: 2.2mm; 
     letter-spacing: 0.3mm;
     color: #6b7280;
     border-bottom: 0.2mm solid #e5e7eb;
-    padding-bottom: 1.2mm;
-    margin-bottom: 3.5mm; /* 3mmから3.5mmへ広げ、名前エリアとの間隔を確保 */
+    padding-bottom: 1.5mm;
+    margin-bottom: 4mm; /* 余白を広げて上部の息抜きを確保 */
     position: relative;
     z-index: 2;
 }
 
 .card-name-area {
-    margin-top: 0; /* 上部の余白は学校名側に任せる */
-    margin-bottom: auto; /* 詳細情報との間に自然な余白を生む */
+    margin-top: 0; 
+    margin-bottom: auto; /* 詳細情報と名前エリアを引き離し、最適な上下配置に */
     position: relative;
     z-index: 2;
 }
 
 .card-role {
-    font-size: 2.2mm; /* 少し縮小 */
+    font-size: 2.2mm; 
     color: #4b5563;
-    margin-bottom: 0.8mm; /* 名前との間隔を少し広げて窮屈さを緩和 */
+    margin-bottom: 0.8mm; 
     letter-spacing: 0.5mm;
 }
 
 .card-name {
-    font-size: 6.2mm; /* 5.6mmから少し大きくして存在感をアップ */
+    font-size: 6.2mm; 
     font-weight: 500; 
-    letter-spacing: 1.5mm; /* 文字間隔を少し詰める */
+    letter-spacing: 1.5mm; 
     color: #111827;
     line-height: 1.1; 
 }
 
-/* 新規追加：ローマ字 */
+/* ローマ字 */
 .card-romaji {
-    font-size: 1.6mm; /* 少し縮小 */
+    font-size: 1.6mm; 
     color: #9ca3af;
     letter-spacing: 0.8mm;
     font-family: 'Noto Sans JP', sans-serif;
-    margin-top: 0.8mm; /* 名前との間隔を少し広げて窮屈さを緩和 */
+    margin-top: 0.8mm; 
 }
 
-/* 詳細情報：レイアウトを少し広めに */
+/* 詳細情報：3つの情報をゆったり見せる配置に調整 */
 .card-details {
     display: flex;
     flex-direction: column;
-    gap: 1.2mm; /* 文字サイズを下げた分、行間を適度に取って窮屈さを解消 */
+    gap: 1.8mm; /* ひとことが消えた分、行間を1.2mm→1.8mmに広げて窮屈さを完全に解消 */
     position: relative;
     z-index: 2;
 }
@@ -405,16 +405,16 @@ body {
 
 /* ラベル：英字ゴシック */
 .detail-label {
-    width: 14mm; /* 少し狭く */
+    width: 14mm; 
     font-family: 'Noto Sans JP', sans-serif;
-    font-size: 1.5mm; /* 少し縮小 */
+    font-size: 1.5mm; 
     font-weight: 500;
     color: #9ca3af;
     letter-spacing: 0.5mm;
 }
 
 .detail-value {
-    font-size: 2.1mm; /* 3号名刺に合わせて適正なサイズに縮小 */
+    font-size: 2.1mm; 
     color: #374151;
     letter-spacing: 0.2mm;
 }
@@ -429,6 +429,42 @@ body {
 .is-executive .card-romaji { color: rgba(255,255,255,0.7); }
 .is-executive .detail-label { color: rgba(255,255,255,0.6); }
 .is-executive .detail-value { color: #ffffff; }
+
+/* 役職あり ＋ 明るい学年カラーの場合（視認性確保のための黒文字化） */
+.is-executive.is-light-bg .card-school-name {
+    color: rgba(17,24,39,0.75);
+    border-bottom: 0.2mm solid rgba(17,24,39,0.2);
+}
+.is-executive.is-light-bg .card-role { color: rgba(17,24,39,0.8); }
+.is-executive.is-light-bg .card-name { color: #111827; }
+.is-executive.is-light-bg .card-romaji { color: rgba(17,24,39,0.6); }
+.is-executive.is-light-bg .detail-label { color: rgba(17,24,39,0.5); }
+.is-executive.is-light-bg .detail-value { color: #111827; }
+
+/* 明るい背景の場合の右側ドット（黒系） */
+.is-executive.is-light-bg .card-right-pane::before {
+    background-image: radial-gradient(rgba(0,0,0,0.2) 0.5px, transparent 0.5px);
+}
+/* 明るい背景の場合の右下同心円（黒系） */
+.is-executive.is-light-bg .card-right-pane::after {
+    background: repeating-radial-gradient(
+        circle at 50% 50%,
+        transparent,
+        transparent 1.5mm,
+        rgba(0, 0, 0, 0.05) 1.5mm,
+        rgba(0, 0, 0, 0.05) 2mm
+    );
+}
+/* 明るい背景の場合の右上斜線（黒系） */
+.is-executive.is-light-bg .card-right-content::before {
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 1mm,
+        rgba(0,0,0,0.03) 1mm,
+        rgba(0,0,0,0.03) 2mm
+    );
+}
 
 </style>
 </head>
@@ -446,6 +482,7 @@ body {
                 <option value="1">1種類 (1人の名刺を10枚)</option>
                 <option value="2">2種類 (2人の名刺を5枚ずつ)</option>
                 <option value="5">5種類 (5人の名刺を2枚ずつ)</option>
+                <option value="10">10種類 (10人の名刺を1枚ずつ)</option>
             </select>
         </div>
 
@@ -516,10 +553,6 @@ body {
                         <div class="detail-label">SPOT</div>
                         <div class="detail-value display-spot">センター</div>
                     </div>
-                    <div class="detail-row">
-                        <div class="detail-label">MESSAGE</div>
-                        <div class="detail-value display-message">よろしくお願いします</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -534,17 +567,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardTemplate = document.getElementById('card-template');
     const zoomSlider = document.getElementById('zoom-slider');
 
+    // 初期データ（10名分をあらかじめセットしてスムーズな入力を実現）
+    const initialData = [
+        { name: "中尾 汐里", romaji: "Shiori Nakao", role: "人事", color: "#C4A647", isExec: "false", icon: "fa-microphone", classNum: "2年B組 21番", birth: "2011.10.15", spot: "センター" },
+        { name: "佐藤 太一", romaji: "Taichi Sato", role: "部長", color: "#C26038", isExec: "true", icon: "fa-video", classNum: "3年A組 12番", birth: "2010.05.20", spot: "レフト" },
+        { name: "高橋 結衣", romaji: "Yui Takahashi", role: "機材", color: "#8B2E37", isExec: "false", icon: "fa-tape", classNum: "1年C組 05番", birth: "2012.01.18", spot: "卓前" },
+        { name: "鈴木 蓮", romaji: "Ren Suzuki", role: "演出", color: "#1F2C4C", isExec: "true", icon: "fa-lightbulb", classNum: "3年B組 33番", birth: "2010.11.02", spot: "下手" },
+        { name: "渡辺 美咲", romaji: "Misaki Watanabe", role: "アナウンス", color: "#3B5B44", isExec: "false", icon: "fa-microphone", classNum: "2年D組 15番", birth: "2011.08.30", spot: "センター" },
+        { name: "田中 陸", romaji: "Riku Tanaka", role: "編集", color: "#52748C", isExec: "false", icon: "fa-laptop", classNum: "1年A組 22番", birth: "2012.04.14", spot: "編集ブース" },
+        { name: "伊藤 葵", romaji: "Aoi Ito", role: "脚本", color: "#C4A647", isExec: "false", icon: "fa-book", classNum: "2年A組 08番", birth: "2011.06.05", spot: "上手" },
+        { name: "山本 翔", romaji: "Sho Yamamoto", role: "カメラ", color: "#C26038", isExec: "false", icon: "fa-video", classNum: "3年C組 19番", birth: "2010.09.12", spot: "カメラクレーン" },
+        { name: "中村 莉子", romaji: "Riko Nakamura", role: "副部長", color: "#1F2C4C", isExec: "true", icon: "fa-microphone", classNum: "3年A組 27番", birth: "2010.12.25", spot: "センター" },
+        { name: "小林 匠", romaji: "Takumi Kobayashi", role: "音響", color: "#3B5B44", isExec: "false", icon: "fa-tape", classNum: "2年C組 11番", birth: "2011.03.03", spot: "ミキサー" }
+    ];
+
     zoomSlider.addEventListener('input', (e) => {
         a4Preview.style.transform = `scale(${e.target.value})`;
     });
 
     function createFormHTML(index, total) {
+        // 初期データを割り振る
+        const init = initialData[(index - 1) % initialData.length];
+        
         return `
         <div class="person-card" id="form-group-${index}">
             <div class="person-header">
                 <span><i class="fa-regular fa-id-badge"></i> Person ${index}</span>
                 <span style="font-size: 11px; font-weight: normal; color: #6b7280;">
-                    ${total === 1 ? '全10枚' : (total === 2 ? '5枚' : '2枚')}
+                    ${total === 1 ? '全10枚' : (total === 2 ? '5枚' : (total === 5 ? '2枚' : '1枚'))}
                 </span>
             </div>
             
@@ -552,69 +602,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <label class="control-label">学年カラー</label>
                     <select data-index="${index}" data-field="gradeColor" class="form-select">
-                        <option value="#C26038">テラコッタ (高3生)</option>
-                        <option value="#C4A647">マスタード (高2生)</option>
-                        <option value="#8B2E37">ボルドー (高1生)</option>
-                        <option value="#1F2C4C" selected>ネイビー (中3生)</option>
-                        <option value="#3B5B44">フォレスト (中2生)</option>
-                        <option value="#52748C">スレート (中1生)</option>
+                        <option value="#C26038" ${init.color === '#C26038' ? 'selected' : ''}>テラコッタ (高3生)</option>
+                        <option value="#C4A647" ${init.color === '#C4A647' ? 'selected' : ''}>マスタード (高2生)</option>
+                        <option value="#8B2E37" ${init.color === '#8B2E37' ? 'selected' : ''}>ボルドー (高1生)</option>
+                        <option value="#1F2C4C" ${init.color === '#1F2C4C' ? 'selected' : ''}>ネイビー (中3生)</option>
+                        <option value="#3B5B44" ${init.color === '#3B5B44' ? 'selected' : ''}>フォレスト (中2生)</option>
+                        <option value="#52748C" ${init.color === '#52748C' ? 'selected' : ''}>スレート (中1生)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="control-label">役職の有無（デザイン反転）</label>
+                    <label class="control-label">役職の有無</label>
                     <select data-index="${index}" data-field="isExecutive" class="form-select">
-                        <option value="false" selected>平部員（通常配置）</option>
-                        <option value="true">役職あり（特別配置）</option>
+                        <option value="false" ${init.isExec === 'false' ? 'selected' : ''}>平部員 (通常)</option>
+                        <option value="true" ${init.isExec === 'true' ? 'selected' : ''}>役職あり (反転)</option>
                     </select>
                 </div>
             </div>
 
             <label class="control-label">担当分野</label>
             <select data-index="${index}" data-field="icon" class="form-select">
-                <option value="fa-microphone" selected>アナウンス</option>
-                <option value="fa-video">撮影</option>
-                <option value="fa-book">脚本/朗読</option>
-                <option value="fa-lightbulb">照明</option>
-                <option value="fa-tape">音響</option>
-                <option value="fa-laptop">編集</option>
+                <option value="fa-microphone" ${init.icon === 'fa-microphone' ? 'selected' : ''}>アナウンス</option>
+                <option value="fa-video" ${init.icon === 'fa-video' ? 'selected' : ''}>撮影</option>
+                <option value="fa-book" ${init.icon === 'fa-book' ? 'selected' : ''}>脚本/朗読</option>
+                <option value="fa-lightbulb" ${init.icon === 'fa-lightbulb' ? 'selected' : ''}>照明</option>
+                <option value="fa-tape" ${init.icon === 'fa-tape' ? 'selected' : ''}>音響</option>
+                <option value="fa-laptop" ${init.icon === 'fa-laptop' ? 'selected' : ''}>編集</option>
             </select>
 
             <div class="grid-2">
                 <div>
                     <label class="control-label">氏名</label>
-                    <input type="text" data-index="${index}" data-field="name" value="中尾 汐里" class="form-input">
+                    <input type="text" data-index="${index}" data-field="name" value="${init.name}" class="form-input">
                 </div>
                 <div>
                     <label class="control-label">ローマ字</label>
-                    <input type="text" data-index="${index}" data-field="romaji" value="Shiori Nakao" class="form-input">
+                    <input type="text" data-index="${index}" data-field="romaji" value="${init.romaji}" class="form-input">
                 </div>
             </div>
 
             <div class="grid-2">
                 <div>
-                    <label class="control-label">役職</label>
-                    <input type="text" data-index="${index}" data-field="role" value="人事" class="form-input">
+                    <label class="control-label">役職名</label>
+                    <input type="text" data-index="${index}" data-field="role" value="${init.role}" class="form-input">
                 </div>
                 <div>
                     <label class="control-label">クラス・番号</label>
-                    <input type="text" data-index="${index}" data-field="classNum" value="2年B組 21番" class="form-input">
+                    <input type="text" data-index="${index}" data-field="classNum" value="${init.classNum}" class="form-input">
                 </div>
             </div>
 
             <div class="grid-2">
                 <div>
                     <label class="control-label">生年月日</label>
-                    <input type="text" data-index="${index}" data-field="birth" value="2011.10.15" class="form-input">
+                    <input type="text" data-index="${index}" data-field="birth" value="${init.birth}" class="form-input">
                 </div>
                 <div>
                     <label class="control-label">スポット</label>
-                    <input type="text" data-index="${index}" data-field="spot" value="センター" class="form-input">
+                    <input type="text" data-index="${index}" data-field="spot" value="${init.spot}" class="form-input">
                 </div>
-            </div>
-
-            <div>
-                <label class="control-label">ひとこと</label>
-                <input type="text" data-index="${index}" data-field="message" value="よろしくお願いします" class="form-input">
             </div>
         </div>
         `;
@@ -641,6 +686,15 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPreview();
     }
 
+    // 輝度（明るさ）を計算する関数
+    function getLuminance(hex) {
+        hex = hex.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return (r * 299 + g * 587 + b * 114) / 1000;
+    }
+
     function renderPreview() {
         const typeCount = parseInt(layoutSelect.value);
         const cards = a4Preview.querySelectorAll('.business-card');
@@ -656,22 +710,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 romaji: document.querySelector(`input[data-index="${i}"][data-field="romaji"]`).value,
                 classNum: document.querySelector(`input[data-index="${i}"][data-field="classNum"]`).value,
                 birth: document.querySelector(`input[data-index="${i}"][data-field="birth"]`).value,
-                spot: document.querySelector(`input[data-index="${i}"][data-field="spot"]`).value,
-                message: document.querySelector(`input[data-index="${i}"][data-field="message"]`).value,
+                spot: document.querySelector(`input[data-index="${i}"][data-field="spot"]`).value
             };
         }
 
         cards.forEach((card, index) => {
             let personIndex = 1;
-            if (typeCount === 1) personIndex = 1;
-            else if (typeCount === 2) personIndex = (index % 2 === 0) ? 1 : 2;
-            else if (typeCount === 5) personIndex = Math.floor(index / 2) + 1;
+            if (typeCount === 1) {
+                personIndex = 1;
+            } else if (typeCount === 2) {
+                // 左右列での割り振り（偶数が左・奇数が右）
+                personIndex = (index % 2 === 0) ? 1 : 2;
+            } else if (typeCount === 5) {
+                // 各段（行）での割り振り（2枚ずつ同じ）
+                personIndex = Math.floor(index / 2) + 1;
+            } else if (typeCount === 10) {
+                // 10枚すべて別のカード
+                personIndex = index + 1;
+            }
 
             const data = formData[personIndex];
             if (data) {
                 // アイコンクラスの更新
                 const iconEl = card.querySelector('.display-icon');
                 iconEl.className = `fa-solid ${data.icon} display-icon`;
+
+                // 選択された背景色の輝度を判定し、明るい場合はフラグ用クラスを付与
+                const luma = getLuminance(data.gradeColor);
+                if (luma > 175) { // 閾値を調整してスレートやマスタードが確実にライトに分類されるように
+                    card.classList.add('is-light-bg');
+                } else {
+                    card.classList.remove('is-light-bg');
+                }
 
                 // 役職の有無によるデザイン切り替え（反転）
                 if (data.isExecutive) {
@@ -695,7 +765,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.querySelector('.display-class').textContent = data.classNum || '　';
                 card.querySelector('.display-birth').textContent = data.birth || '　';
                 card.querySelector('.display-spot').textContent = data.spot || '　';
-                card.querySelector('.display-message').textContent = data.message || '　';
             }
         });
     }
